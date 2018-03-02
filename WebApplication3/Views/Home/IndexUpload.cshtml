@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Upload";
+}
+
+<br>
+<div class="row justify-content-center">
+    <div class="col-9 border border-info d-flex align-items-center justify-content-center text-info"
+         id="drop_zone" style="height: 200px;">
+        Drop files here
+    </div>
+</div>
+
+<br>
+<div id="customFileInput" class="row justify-content-center">
+    <div class="col-4">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <button id="buttonUpload" class="btn btn-outline-secondary" type="button">Upload</button>
+            </div>
+            <div class="custom-file">
+                <input id="inputFile" type="file" class="custom-file-input" multiple>
+                <label class="custom-file-label" for="inputFile">Choose file</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/fileUpload.js"></script>
+<script src="~/js/fileUploadWithComponents.js"></script>
+<script src="~/js/upload.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#inputFile").change(function () {
+            $("#buttonUpload").prop("disabled", false);
+        });
+
+        $("#buttonUpload").click(function () {
+
+            $(this).prop("disabled", true);
+
+            let upload = new Upload($("#inputFile")[0].files, "home/upload");
+
+            upload.sendWithComponents();
+
+        });
+
+        //
+
+        function handleFileSelect(evt) {
+
+            evt.stopPropagation();
+            evt.preventDefault();
+
+            var files = evt.dataTransfer.files;
+
+            let upload = new Upload(files, "home/upload");
+
+            upload.sendWithComponents();
+
+        };
+
+        function handleDragOver(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            evt.dataTransfer.dropEffect = 'copy';
+        }
+
+        var dropZone = document.getElementById('drop_zone');
+        dropZone.addEventListener('dragover', handleDragOver, false);
+        dropZone.addEventListener('drop', handleFileSelect, false);
+
+    });
+
+</script>

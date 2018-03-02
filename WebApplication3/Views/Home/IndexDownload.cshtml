@@ -1,0 +1,89 @@
+﻿@model string[]
+@{
+    ViewData["Title"] = "Download";
+}
+
+@functions
+{
+public string GetCharCodes(string fileName)
+{
+    string charCodes = "";
+
+    for (int i = 0; i < fileName.Length; i++)
+    {
+        charCodes += ((int)fileName[i]).ToString();
+    }
+
+    return charCodes;
+}
+}
+
+<br />
+<div class="row justify-content-center">
+
+    <div class="col-6">
+
+        @foreach (string fileName in Model)
+        {
+            <div>
+
+                <h6>File name: <span class="badge badge-light">@fileName</span></h6>
+
+                @switch (fileName.Substring(fileName.LastIndexOf('.') + 1).ToLower())
+                {
+                    case "png":
+                    case "jpg":
+                        <img src="~/StaticFiles/uploads/@fileName" class="img-fluid" alt="Responsive image">
+                        break;
+                    case "mp4":
+                        <video class="embed-responsive embed-responsive-16by9" controls>
+                            <source class="embed-responsive-item" src="~/StaticFiles/uploads/@fileName" type="video/mp4">
+                        </video>
+                        break;
+                    case "rar":
+                        <div class="text-center">
+                            <img src="~/images/93-showicon.png" class="rounded" width="256" height="256" alt="...">
+                        </div>
+                        break;
+                }
+
+                <div class="d-flex flex-row-reverse">
+                    <div class="p-0">
+                        <button type="button" class="btn btn-light">Delete</button>
+                    </div>
+                    <div class="p-0">
+                        <a asp-action="Download" asp-route-fileName="@fileName" class="btn btn-light" role="button">Download</a>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+        }
+
+    </div>
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        $("button").click(function () {
+
+            let div = $(this).parent().parent().parent();
+
+            let fileName = div.children("h6").children().text();
+
+            div.remove();
+
+            $.ajax({
+                method: 'POST',
+                url: 'delete',
+                data: { fileName: fileName }
+            });
+
+        });
+
+    });
+
+</script>
